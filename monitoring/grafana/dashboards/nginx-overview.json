@@ -1,0 +1,78 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 101,
+      "title": "Chỉ số tức thời Nginx Reverse Proxy",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] } }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+      "id": 11,
+      "title": "Tổng số kết nối đang hoạt động (Active Connections)",
+      "type": "stat",
+      "targets": [{ "expr": "nginx_up == 1 and nginx_connections_active", "legendFormat": "Active" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+      "id": 12,
+      "title": "Tổng số Requests đã xử lý",
+      "type": "stat",
+      "targets": [{ "expr": "nginx_http_requests_total", "legendFormat": "Total Requests" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 20, "lineWidth": 2 },
+          "unit": "reqps"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 5 },
+      "id": 13,
+      "title": "Tốc độ Requests / giây (Requests per Second - RPS)",
+      "type": "timeseries",
+      "targets": [{ "expr": "rate(nginx_http_requests_total[1m])", "legendFormat": "RPS" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 20, "lineWidth": 2 }
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 5 },
+      "id": 14,
+      "title": "Phân bố trạng thái kết nối Nginx (Reading, Writing, Waiting)",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "nginx_connections_reading", "legendFormat": "Reading" },
+        { "expr": "nginx_connections_writing", "legendFormat": "Writing" },
+        { "expr": "nginx_connections_waiting", "legendFormat": "Waiting" }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["nginx", "reverse-proxy", "traffic"],
+  "time": { "from": "now-15m", "to": "now" },
+  "title": "Nginx Web Server & Reverse Proxy Traffic",
+  "uid": "nginx-traffic-overview"
+}

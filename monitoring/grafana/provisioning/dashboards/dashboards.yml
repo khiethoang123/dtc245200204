@@ -1,0 +1,14 @@
+# ==============================================================================
+# CẤU HÌNH TỰ ĐỘNG NẠP DASHBOARDS CHO GRAFANA (PROVISIONING)
+# ==============================================================================
+apiVersion: 1
+
+providers:
+  - name: 'Default Dashboards'
+    orgId: 1
+    folder: 'Production Monitoring'
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/json

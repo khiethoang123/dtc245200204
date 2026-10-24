@@ -1,0 +1,82 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 102,
+      "title": "Hiệu năng Cơ sở Dữ liệu MySQL 8.0",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "s"
+        }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+      "id": 21,
+      "title": "Thời gian hoạt động (MySQL Uptime)",
+      "type": "stat",
+      "targets": [{ "expr": "mysql_global_status_uptime", "legendFormat": "Uptime" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] } }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+      "id": 22,
+      "title": "Số luồng đang kết nối (Threads Connected)",
+      "type": "stat",
+      "targets": [{ "expr": "mysql_global_status_threads_connected", "legendFormat": "Threads Connected" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 20, "lineWidth": 2 },
+          "unit": "qps"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 5 },
+      "id": 23,
+      "title": "Tốc độ Truy vấn Cơ sở dữ liệu (Queries / sec - QPS)",
+      "type": "timeseries",
+      "targets": [{ "expr": "rate(mysql_global_status_queries[1m])", "legendFormat": "Queries/sec" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 20, "lineWidth": 2 },
+          "unit": "Bps"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 5 },
+      "id": 24,
+      "title": "Băng thông Dữ liệu MySQL (Bytes Received / Sent)",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "rate(mysql_global_status_bytes_received[1m])", "legendFormat": "Bytes Received" },
+        { "expr": "rate(mysql_global_status_bytes_sent[1m])", "legendFormat": "Bytes Sent" }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["mysql", "database", "innodb"],
+  "time": { "from": "now-15m", "to": "now" },
+  "title": "MySQL Database 8.0 Overview & Query Performance",
+  "uid": "mysql-database-overview"
+}

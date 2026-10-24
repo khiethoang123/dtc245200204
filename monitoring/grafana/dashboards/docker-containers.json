@@ -1,0 +1,101 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 100,
+      "title": "Tổng quan trạng thái Container",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+      "id": 1,
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "title": "Số Container đang chạy",
+      "type": "stat",
+      "targets": [{ "expr": "count(container_last_seen{name=~\".+\"})", "legendFormat": "Running Containers" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 20, "lineWidth": 2 },
+          "unit": "percentunit"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 5 },
+      "id": 2,
+      "title": "Sử dụng CPU theo Container (%)",
+      "type": "timeseries",
+      "targets": [{ "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\".+\"}[1m])) by (name) * 100", "legendFormat": "{{name}}" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 20, "lineWidth": 2 },
+          "unit": "bytes"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 5 },
+      "id": 3,
+      "title": "Sử dụng RAM theo Container (Memory Usage)",
+      "type": "timeseries",
+      "targets": [{ "expr": "sum(container_memory_usage_bytes{name=~\".+\"}) by (name)", "legendFormat": "{{name}}" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 15, "lineWidth": 2 },
+          "unit": "Bps"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 13 },
+      "id": 4,
+      "title": "Lưu lượng Mạng Nhận (Network Receive Bps)",
+      "type": "timeseries",
+      "targets": [{ "expr": "sum(rate(container_network_receive_bytes_total{name=~\".+\"}[1m])) by (name)", "legendFormat": "{{name}} (RX)" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 15, "lineWidth": 2 },
+          "unit": "Bps"
+        }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 13 },
+      "id": 5,
+      "title": "Lưu lượng Mạng Truyền (Network Transmit Bps)",
+      "type": "timeseries",
+      "targets": [{ "expr": "sum(rate(container_network_transmit_bytes_total{name=~\".+\"}[1m])) by (name)", "legendFormat": "{{name}} (TX)" }]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["docker", "cadvisor", "containers"],
+  "time": { "from": "now-15m", "to": "now" },
+  "title": "Docker Containers Performance (cAdvisor)",
+  "uid": "docker-containers-overview"
+}

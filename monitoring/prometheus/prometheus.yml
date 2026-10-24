@@ -1,0 +1,39 @@
+# ==============================================================================
+# CẤU HÌNH THU THẬP CHỈ SỐ HỆ THỐNG VỚI PROMETHEUS (COMMIT 2)
+# ==============================================================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  scrape_timeout: 10s
+
+# Định nghĩa các nguồn thu thập (Scrape Targets)
+scrape_configs:
+  # 1. Tự giám sát chính Prometheus
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # 2. Giám sát tài nguyên toàn bộ Docker Containers qua cAdvisor
+  - job_name: 'cadvisor'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['cadvisor:8080']
+
+  # 3. Giám sát lưu lượng máy chủ Web Nginx qua Nginx Exporter
+  - job_name: 'nginx'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+
+  # 4. Giám sát hiệu năng và truy vấn Cơ sở dữ liệu MySQL qua MySQL Exporter
+  - job_name: 'mysql'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['mysql-exporter:9104']
+
+  # 5. Giám sát hệ điều hành máy chủ Host qua Node Exporter
+  - job_name: 'node-exporter'
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['node-exporter:9100']

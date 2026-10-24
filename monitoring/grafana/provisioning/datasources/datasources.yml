@@ -1,0 +1,16 @@
+# ==============================================================================
+# CẤU HÌNH TỰ ĐỘNG DATASOURCES CHO GRAFANA (PROVISIONING)
+# ==============================================================================
+apiVersion: 1
+
+datasources:
+  # 1. Nguồn dữ liệu chỉ số thời gian thực Prometheus (Default)
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+    jsonData:
+      timeInterval: 15s
+      httpMethod: POST

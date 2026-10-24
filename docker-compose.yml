@@ -16,6 +16,7 @@ services:
       - nginx_logs:/var/log/nginx
     networks:
       - frontend-net
+      - monitoring-net
     depends_on:
       wordpress:
         condition: service_healthy
@@ -109,6 +110,128 @@ services:
       mysql:
         condition: service_healthy
 
+  # ============================================================================
+  # 5. PROMETHEUS (HỆ THỐNG THU THẬP & LƯU TRỮ METRICS THỜI GIAN THỰC)
+  # ============================================================================
+  prometheus:
+    image: prom/prometheus:v2.50.1
+    container_name: production-prometheus
+    restart: always
+    user: "nobody" # Non-root container (Hardening)
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=15d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - monitoring-net
+      - frontend-net
+
+  # ============================================================================
+  # 6. GRAFANA (GIAO DIỆN TRỰC QUAN HÓA CHỈ SỐ DASHBOARDS)
+  # ============================================================================
+  grafana:
+    image: grafana/grafana:10.4.0
+    container_name: production-grafana
+    restart: always
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-Grafana_Admin_Secured_2026!}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards/json:ro
+    networks:
+      - monitoring-net
+      - frontend-net
+    depends_on:
+      - prometheus
+
+  # ============================================================================
+  # 7. CADVISOR (GIÁM SÁT TÀI NGUYÊN TOÀN BỘ CONTAINERS DOCKER)
+  # ============================================================================
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: production-cadvisor
+    restart: always
+    ports:
+      - "${CADVISOR_PORT:-8081}:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      - monitoring-net
+
+  # ============================================================================
+  # 8. MYSQL EXPORTER (XUẤT CHỈ SỐ DATABASE MYSQL SANG PROMETHEUS)
+  # ============================================================================
+  mysql-exporter:
+    image: prom/mysqld-exporter:v0.15.1
+    container_name: production-mysql-exporter
+    restart: always
+    ports:
+      - "${MYSQL_EXPORTER_PORT:-9104}:9104"
+    environment:
+      DATA_SOURCE_NAME: "exporter:${MYSQL_EXPORTER_PASSWORD:-Exporter_Secure_P@ss_2026!}@(mysql:3306)/"
+    networks:
+      - backend-net
+      - monitoring-net
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # ============================================================================
+  # 9. NGINX EXPORTER (XUẤT CHỈ SỐ TRAFFIC VÀ KẾT NỐI NGINX SANG PROMETHEUS)
+  # ============================================================================
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:1.1.0
+    container_name: production-nginx-exporter
+    restart: always
+    ports:
+      - "${NGINX_EXPORTER_PORT:-9113}:9113"
+    command:
+      - -nginx.scrape-uri=http://nginx:8080/stub_status
+    networks:
+      - frontend-net
+      - monitoring-net
+    depends_on:
+      - nginx
+
+  # ============================================================================
+  # 10. NODE EXPORTER (GIÁM SÁT TÀI NGUYÊN MÁY CHỦ HOST)
+  # ============================================================================
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    container_name: production-node-exporter
+    restart: always
+    ports:
+      - "${NODE_EXPORTER_PORT:-9100}:9100"
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    networks:
+      - monitoring-net
+
 # ==============================================================================
 # PHÂN TẦNG MẠNG (NETWORK ISOLATION - HARDENING)
 # ==============================================================================
@@ -119,6 +242,9 @@ networks:
   backend-net:
     driver: bridge
     name: net_production_backend
+  monitoring-net:
+    driver: bridge
+    name: net_production_monitoring
 
 # ==============================================================================
 # LƯU TRỮ DỮ LIỆU (PERSISTENT VOLUMES)
@@ -130,3 +256,7 @@ volumes:
     name: vol_production_wordpress_data
   nginx_logs:
     name: vol_production_nginx_logs
+  prometheus_data:
+    name: vol_production_prometheus_data
+  grafana_data:
+    name: vol_production_grafana_data
