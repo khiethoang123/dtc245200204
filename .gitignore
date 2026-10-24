@@ -1,0 +1,31 @@
+# Environment variables
+.env
+!.env.example
+
+# Docker Volumes and persistent storage
+data/
+mysql_data/
+wordpress_data/
+grafana_data/
+prometheus_data/
+loki_data/
+
+# Logs
+*.log
+logs/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor settings
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.bak
+scratch/
