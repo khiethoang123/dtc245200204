@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo cáo Bài tập lớn - Đề tài 3: Triển khai và Quản trị Hệ thống WordPress Production</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');
+        
+        @page {
+            size: A4;
+            margin: 25mm 20mm 20mm 30mm;
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 13pt;
+            line-height: 1.5;
+            color: #1a1a1a;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .paper {
+            background: #ffffff;
+            max-width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 25mm 20mm 20mm 30mm;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-sizing: border-box;
+        }
+
+        .cover-page {
+            border: 3px double #0f172a;
+            padding: 30px 20px;
+            text-align: center;
+            min-height: 240mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            page-break-after: always;
+        }
+
+        .cover-header {
+            font-size: 13pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            line-height: 1.4;
+        }
+
+        .cover-divider {
+            margin: 15px auto;
+            width: 150px;
+            border-top: 1px solid #64748b;
+        }
+
+        .cover-title {
+            margin: 40px 0;
+        }
+
+        .cover-title h1 {
+            font-size: 20pt;
+            color: #0369a1;
+            margin-bottom: 10px;
+        }
+
+        .cover-title h2 {
+            font-size: 14pt;
+            color: #334155;
+            margin-bottom: 25px;
+        }
+
+        .cover-title h3 {
+            font-size: 13pt;
+            color: #b91c1c;
+            line-height: 1.4;
+        }
+
+        .cover-info {
+            width: 80%;
+            margin: 40px auto;
+            text-align: left;
+            font-size: 12pt;
+        }
+
+        .cover-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .cover-info td {
+            padding: 6px 10px;
+        }
+
+        .cover-info td:first-child {
+            font-weight: bold;
+            width: 45%;
+        }
+
+        .cover-footer {
+            font-size: 12pt;
+            font-style: italic;
+        }
+
+        .page-break {
+            page-break-after: always;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px dashed #cbd5e1;
+        }
+
+        h1, h2, h3, h4 {
+            color: #0f172a;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 16pt;
+            text-transform: uppercase;
+            border-bottom: 2px solid #0284c7;
+            padding-bottom: 6px;
+            margin-top: 35px;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            font-size: 14pt;
+            color: #0369a1;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 13pt;
+            color: #334155;
+            margin-top: 18px;
+            margin-bottom: 8px;
+        }
+
+        p {
+            text-align: justify;
+            text-indent: 1cm;
+            margin-bottom: 8px;
+        }
+
+        table.content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 11pt;
+        }
+
+        table.content-table th, table.content-table td {
+            border: 1px solid #cbd5e1;
+            padding: 8px 10px;
+            text-align: left;
+        }
+
+        table.content-table th {
+            background-color: #0284c7;
+            color: #ffffff;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        table.content-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        pre {
+            background-color: #f1f5f9;
+            border-left: 4px solid #0284c7;
+            padding: 12px 16px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 10pt;
+            line-height: 1.4;
+            overflow-x: auto;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+
+        ul, ol {
+            margin-left: 1cm;
+            margin-bottom: 10px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+            }
+            .paper {
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                max-width: none;
+            }
+            .page-break {
+                border-top: none;
+                margin-top: 0;
+                padding-top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="paper">
+    <!-- TRANG BÌA -->
+    <div class="cover-page">
+        <div class="cover-header">
+            BỘ GIÁO DỤC VÀ ĐÀO TẠO<br>
+            TRƯỜNG ĐẠI HỌC CÔNG NGHỆ<br>
+            KHOA CÔNG NGHỆ THÔNG TIN
+            <div class="cover-divider"></div>
+        </div>
+
+        <div class="cover-title">
+            <h1>BÁO CÁO BÀI TẬP LỚN</h1>
+            <h2>MÔN: TRIỂN KHAI VÀ QUẢN TRỊ HỆ THỐNG PHẦN MỀM</h2>
+            <h3>ĐỀ TÀI 3:<br>WEBSITE QUẢNG BÁ SẢN PHẨM SỬ DỤNG WORDPRESS, REVERSE PROXY NGINX, PROMETHEUS, GRAFANA, LOKI VÀ BẢO MẬT GIA CỐ HỆ THỐNG (HARDENING)</h3>
+        </div>
+
+        <div class="cover-info">
+            <table>
+                <tr>
+                    <td>Sinh viên thực hiện:</td>
+                    <td><strong>Đặng Trần Hưng</strong></td>
+                </tr>
+                <tr>
+                    <td>Mã số sinh viên (MSSV):</td>
+                    <td><strong>20210001</strong></td>
+                </tr>
+                <tr>
+                    <td>Lớp:</td>
+                    <td>CNTT - K15</td>
+                </tr>
+                <tr>
+                    <td>Chuyên ngành:</td>
+                    <td>Kỹ thuật Phần mềm / Mạng máy tính</td>
+                </tr>
+                <tr>
+                    <td>Giảng viên hướng dẫn:</td>
+                    <td>ThS. Nguyễn Văn B</td>
+                </tr>
+                <tr>
+                    <td>Học kỳ / Năm học:</td>
+                    <td>Học kỳ I - Năm học 2026 - 2027</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="cover-footer">
+            Hà Nội, Tháng 10 Năm 2026
+        </div>
+    </div>
+
+    <!-- NỘI DUNG BÁO CÁO -->
+    <div class="page-break"></div>
+    <h1>MỤC LỤC BÁO CÁO</h1>
+    <ul>
+        <li><strong>CHƯƠNG 1:</strong> TỔNG QUAN ĐỀ TÀI VÀ MỤC TIÊU TRIỂN KHAI</li>
+        <li><strong>CHƯƠNG 2:</strong> THIẾT KẾ KIẾN TRÚC HỆ THỐNG VÀ PHÂN TẦNG MẠNG (NETWORK ISOLATION)</li>
+        <li><strong>CHƯƠNG 3:</strong> HIỆN THỰC ỨNG DỤNG WEB & NGINX REVERSE PROXY (COMMIT 1)</li>
+        <li><strong>CHƯƠNG 4:</strong> HỆ THỐNG GIÁM SÁT TOÀN DIỆN VỚI PROMETHEUS & GRAFANA (COMMIT 2)</li>
+        <li><strong>CHƯƠNG 5:</strong> HỆ THỐNG GHI LOG TẬP TRUNG LOKI & PROMTAIL (COMMIT 3)</li>
+        <li><strong>CHƯƠNG 6:</strong> CÁC BIỆN PHÁP GIA CỐ VÀ BẢO MẬT HỆ THỐNG (HARDENING)</li>
+        <li><strong>CHƯƠNG 7:</strong> KỊCH BẢN KIỂM THỬ, ĐÁNH GIÁ VÀ HƯỚNG DẪN VẬN HÀNH</li>
+        <li><strong>CHƯƠNG 8:</strong> KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN</li>
+        <li>TÀI LIỆU THAM KHẢO</li>
+    </ul>
+
+    <div class="page-break"></div>
+    <h1>CHƯƠNG 1: TỔNG QUAN ĐỀ TÀI VÀ MỤC TIÊU TRIỂN KHAI</h1>
+    <p>Trong môi trường sản xuất thực tế, việc triển khai ứng dụng web thương mại hay quảng bá sản phẩm đòi hỏi sự kết hợp đồng bộ giữa tính sẵn sàng cao, tính bảo mật và khả năng quan sát hệ thống. Đề tài xây dựng một hệ thống hoàn chỉnh đóng gói bằng Docker Compose, ứng dụng Nginx làm Reverse Proxy, WordPress 6.7, MySQL 8.0, phpMyAdmin, hệ thống thu thập chỉ số Prometheus - Grafana và quản trị log tập trung Loki - Promtail.</p>
+
+    <div class="page-break"></div>
+    <h1>CHƯƠNG 2: THIẾT KẾ KIẾN TRÚC HỆ THỐNG VÀ PHÂN TẦNG MẠNG</h1>
+    <p>Hệ thống được thiết kế theo mô hình phòng thủ theo chiều sâu (Defense-in-Depth) với 3 mạng ảo cách ly:</p>
+    <ul>
+        <li><strong>net_production_frontend:</strong> Nối Nginx với WordPress, phpMyAdmin và Grafana.</li>
+        <li><strong>net_production_backend:</strong> Chỉ cho phép WordPress và phpMyAdmin kết nối tới MySQL. Cổng 3306 hoàn toàn không ánh xạ ra máy chủ host.</li>
+        <li><strong>net_production_monitoring:</strong> Kết nối độc lập phục vụ Prometheus, Loki, Promtail và các Exporter.</li>
+    </ul>
+
+    <div class="page-break"></div>
+    <h1>CHƯƠNG 3: HIỆN THỰC ỨNG DỤNG WEB & NGINX REVERSE PROXY (COMMIT 1)</h1>
+    <p>Triển khai WordPress 6.7 và MySQL 8.0. Nginx tiếp nhận toàn bộ kết nối tại cổng 80 (tự động chuyển hướng 301 sang HTTPS) và cổng 443 với chứng chỉ SSL tự ký có SAN. Áp dụng 7 tiêu đề an ninh HTTP (Security Headers) và giới hạn tốc độ (Rate Limiting) chống brute force.</p>
+
+    <div class="page-break"></div>
+    <h1>CHƯƠNG 4: HỆ THỐNG GIÁM SÁT TOÀN DIỆN VỚI PROMETHEUS & GRAFANA (COMMIT 2)</h1>
+    <p>Tích hợp cAdvisor (tài nguyên container), Nginx Exporter (lưu lượng web), MySQL Exporter (hiệu năng database) và Node Exporter. Grafana được cấu hình Provisioning tự động nạp nguồn dữ liệu và 3 bảng điều khiển (Dashboards) trực quan.</p>
+
+    <div class="page-break"></div>
+    <h1>CHƯƠNG 5: HỆ THỐNG GHI LOG TẬP TRUNG LOKI & PROMTAIL (COMMIT 3)</h1>
+    <p>Promtail thu thập access.log và error.log của Nginx đẩy về Loki. Xây dựng 5 câu truy vấn LogQL mẫu phục vụ điều tra sự cố và phát hiện tấn công bảo mật thời gian thực.</p>
+
+    <div class="page-break"></div>
+    <h1>CHƯƠNG 6: CÁC BIỆN PHÁP GIA CỐ VÀ BẢO MẬT HỆ THỐNG (HARDENING)</h1>
+    <p>Thực hiện vận hành non-root containers (Prometheus, Loki), bảo vệ cổng database, phân quyền tối thiểu (Least Privilege cho MySQL user exporter), quản lý biến môi trường .env an toàn và chặn đứng các lỗ hổng WordPress (XML-RPC, thực thi PHP trong thư mục tải lên).</p>
+
+    <div class="page-break"></div>
+    <h1>CHƯƠNG 7: KỊCH BẢN KIỂM THỬ VÀ HƯỚNG DẪN VẬN HÀNH</h1>
+    <p>Kiểm thử tự động hóa thông qua script xác nhận 100% các tiêu chí đạt: Chuyển hướng 301 sang HTTPS, kiểm tra Security Headers, chặn truy cập /xmlrpc.php với mã 403 Forbidden và truy vấn log thành công trên Grafana Explore.</p>
+
+    <div class="page-break"></div>
+    <h1>CHƯƠNG 8: KẾT LUẬN VÀ TÀI LIỆU THAM KHẢO</h1>
+    <p>Hệ thống đáp ứng trọn vẹn mọi yêu cầu của đề tài, sẵn sàng đưa vào vận hành thực tế và bảo vệ trước các hội đồng đánh giá chuyên môn.</p>
+</div>
+
+</body>
+</html>
