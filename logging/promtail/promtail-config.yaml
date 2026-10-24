@@ -1,0 +1,34 @@
+# ==============================================================================
+# CẤU HÌNH PROMTAIL - THU THẬP VÀ ĐẨY LOG VỀ LOKI (COMMIT 3)
+# ==============================================================================
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  # 1. Thu thập log của Nginx Reverse Proxy (Access Log & Error Log)
+  - job_name: nginx
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: nginx
+          env: production
+          service: reverse-proxy
+          __path__: /var/log/nginx/*.log
+
+  # 2. Thu thập log của các Container Docker (nếu được mount thư mục container logs)
+  - job_name: containers
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: docker-containers
+          env: production
+          __path__: /var/lib/docker/containers/*/*-json.log

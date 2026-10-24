@@ -1,5 +1,5 @@
 # ==============================================================================
-# CẤU HÌNH TỰ ĐỘNG DATASOURCES CHO GRAFANA (PROVISIONING)
+# CẤU HÌNH TỰ ĐỘNG DATASOURCES CHO GRAFANA (PROMETHEUS + LOKI)
 # ==============================================================================
 apiVersion: 1
 
@@ -14,3 +14,12 @@ datasources:
     jsonData:
       timeInterval: 15s
       httpMethod: POST
+
+  # 2. Nguồn dữ liệu Log tập trung Grafana Loki
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    editable: true
+    jsonData:
+      maxLines: 1000

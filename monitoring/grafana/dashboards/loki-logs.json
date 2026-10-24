@@ -1,0 +1,51 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 103,
+      "title": "Hệ thống Log tập trung Loki & Promtail",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "Loki" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "fillOpacity": 30, "lineWidth": 1 } }
+      },
+      "gridPos": { "h": 7, "w": 24, "x": 0, "y": 1 },
+      "id": 31,
+      "title": "Tần suất và khối lượng Log theo thời gian (Log Volume)",
+      "type": "timeseries",
+      "targets": [{ "expr": "sum(count_over_time({job=~\".+\"}[1m])) by (job)", "legendFormat": "{{job}}" }]
+    },
+    {
+      "datasource": { "type": "loki", "uid": "Loki" },
+      "gridPos": { "h": 16, "w": 24, "x": 0, "y": 8 },
+      "id": 32,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "title": "Dòng sự kiện Log chi tiết (Loki Live Log Streams)",
+      "type": "logs",
+      "targets": [{ "expr": "{job=~\".+\"}", "legendFormat": "" }]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["loki", "promtail", "logging", "logql"],
+  "time": { "from": "now-1h", "to": "now" },
+  "title": "Centralized Log Streams (Loki & Promtail)",
+  "uid": "centralized-loki-logs"
+}

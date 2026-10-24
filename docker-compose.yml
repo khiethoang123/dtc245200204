@@ -232,6 +232,42 @@ services:
     networks:
       - monitoring-net
 
+  # ============================================================================
+  # 11. GRAFANA LOKI (HỆ THỐNG LƯU TRỮ VÀ XỬ LÝ LOG TẬP TRUNG)
+  # ============================================================================
+  loki:
+    image: grafana/loki:2.9.4
+    container_name: production-loki
+    restart: always
+    user: "10001:10001" # Non-root Hardening
+    ports:
+      - "${LOKI_PORT:-3100}:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./logging/loki/loki-config.yaml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+    networks:
+      - monitoring-net
+
+  # ============================================================================
+  # 12. PROMTAIL (AGENTS THU THẬP VÀ ĐẨY LOG VỀ LOKI)
+  # ============================================================================
+  promtail:
+    image: grafana/promtail:2.9.4
+    container_name: production-promtail
+    restart: always
+    ports:
+      - "${PROMTAIL_PORT:-9080}:9080"
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./logging/promtail/promtail-config.yaml:/etc/promtail/config.yml:ro
+      - nginx_logs:/var/log/nginx:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    networks:
+      - monitoring-net
+    depends_on:
+      - loki
+
 # ==============================================================================
 # PHÂN TẦNG MẠNG (NETWORK ISOLATION - HARDENING)
 # ==============================================================================
@@ -260,3 +296,5 @@ volumes:
     name: vol_production_prometheus_data
   grafana_data:
     name: vol_production_grafana_data
+  loki_data:
+    name: vol_production_loki_data
